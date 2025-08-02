@@ -78,12 +78,62 @@ const projectData = {
         outcome: 'A professional and visually appealing personal website that effectively highlights my capabilities as a developer.'
     },
     project4: {
-        title: 'Task Manager Web App',
-        description: 'The Task Manager is a web application designed to help users manage their daily tasks efficiently. Users can add tasks, mark them as completed or undone, and delete them as needed. The app is fully responsive and visually interactive.',
-        technologies: ['HTML', 'CSS', 'JavaScript', 'DOM Manipulation', 'Local Storage'],
-        features: ['Add, delete, complete and undo tasks', 'Responsive and clean UI design', 'Real-time task list rendering', 'Local storage support for data persistence', 'Interactive feedback on task status'],
-        challenges: 'Ensuring real-time updates on UI for every action without reloading and maintaining task state using local storage effectively.',
-        outcome: 'Successfully created a fully functional Task Manager that works smoothly on both desktop and mobile devices, enhancing productivity for users.'
+        title: 'Task Manager - A Modern To-Do Application',
+        description: 'Task Manager is a sleek, modern, and fully interactive to-do list application designed with a beautiful "liquid glass" (glassmorphism) aesthetic. It\'s a single-page application built with vanilla HTML, CSS, and JavaScript, making it lightweight, fast, and easy to run anywhere. All tasks are saved locally in your browser, so your data persists between sessions without needing a backend or database.',
+        technologies: ['HTML5', 'Tailwind CSS', 'JavaScript (ES6+)', 'Local Storage'],
+        features: [
+            'Stunning Glassmorphism UI.',
+            'Persistent local storage for tasks.',
+            'Custom-built, interactive calendar for date selection.',
+            'Beautiful, draggable analog clock for time selection.',
+            'Due date browser notifications (with permission).',
+            'Fully responsive and has zero dependencies.'
+        ],
+        challenges: 'This project showcases advanced UI/UX concepts, including custom-built, interactive modals for date and time selection, dynamic DOM manipulation, and a responsive design that works beautifully on all devices.',
+        outcome: 'A fully functional and visually appealing Task Manager that works smoothly on all devices, demonstrating advanced frontend skills without relying on any frameworks.'
+    },
+    project5: {
+        title: 'Shadow PDF - AI-Powered PDF Toolkit',
+        description: 'Shadow PDF is your all-in-one AI-powered document management and PDF toolkit. This web-based platform provides a seamless experience to summarize, edit, convert, compress, and manipulate your documents in just a few clicks — all from the browser, with no installations needed.',
+        technologies: ['HTML', 'CSS', 'JavaScript', 'OpenAI API', 'PDF.js', 'jsPDF'],
+        features: [
+            'AI Document Summarizer & Q&A with your document.',
+            'Full suite of PDF editing tools (Merge, Split, Modify pages).',
+            'Comprehensive conversion tools (PDF to Word, Images to PDF, etc.).',
+            'Efficient PDF compression without quality loss.',
+            'Completely web-based, privacy-focused, and user-friendly.'
+        ],
+        challenges: 'Integrating multiple third-party libraries (PDF.js, jsPDF) and the OpenAI API into a cohesive and performant application. Ensuring secure and efficient handling of user-uploaded files was a top priority.',
+        outcome: 'The result is a powerful, all-in-one PDF management tool that leverages AI to provide advanced features typically found in premium desktop software, but accessible to anyone through a web browser.'
+    },
+        project6: {
+        title: 'Namma BMTC AI Mitra',
+        description: 'Namma BMTC AI Mitra is a modern, AI-powered, and offline-first web application designed to simplify navigating Bengaluru\'s extensive BMTC bus network. It intelligently combines the power of Google\'s Gemini AI for complex route planning with a robust offline database for unmatched reliability.',
+        technologies: ['React', 'Tailwind CSS', 'Google Gemini API', 'JavaScript (ES6+)', 'Offline-First'],
+        features: [
+            'AI-Powered Route Suggestions with connecting routes and fares.',
+            'Dual-Engine Search with seamless offline fallback.',
+            'Comprehensive offline database of over 770 routes.',
+            'Resilient API key pooling system to maximize uptime.',
+            'Modern, responsive UI with smart autocomplete search.'
+        ],
+        challenges: 'Building a resilient hybrid system that gracefully switches between AI and offline modes. Another key challenge was compiling a comprehensive offline database from official documents and implementing an effective API key rotation strategy to handle rate limits.',
+        outcome: 'An intelligent and reliable bus navigation tool that ensures users can find routes even without an internet connection, showcasing a robust offline-first architecture combined with cutting-edge AI.'
+    },
+    project7: {
+        title: 'YouTube Multi-Alarm Scheduler',
+        description: 'A dynamic, single-page web application that allows you to schedule multiple YouTube videos or playlists to automatically play at specific times, enhancing your productivity, study sessions, or entertainment routines.',
+        technologies: ['HTML5', 'CSS3', 'JavaScript (ES6+)', 'Tailwind CSS', 'Open-Meteo API'],
+        features: [
+            'Schedule multiple alarms with no restrictions.',
+            'Flexible scheduling: specific times or countdown timers.',
+            'Real-time visual status for each alarm (Scheduled, Playing, Finished).',
+            'Smart tab management: new tab, same tab, or reuse one tab.',
+            'Dynamic UI theming based on time of day and local weather.',
+            'Popup blocker detection and user notification.'
+        ],
+        challenges: 'Managing multiple concurrent timers accurately with JavaScript\'s `setTimeout`. Implementing the dynamic theming based on asynchronous weather API calls without causing layout shifts. Gracefully handling browser popup-blocking behavior.',
+        outcome: 'A robust and user-friendly scheduling tool that enhances productivity and entertainment by automating video playback. The project successfully integrates external APIs and demonstrates complex state management in a single-page application.'
     }
 };
 
