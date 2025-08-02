@@ -816,6 +816,28 @@ body.light-mode .contact-form textarea {
     .timeline-content::before { left: -2.5rem !important; }
     .hero-buttons { flex-direction: column; align-items: center; }
     .skills-grid, .projects-grid, .education-grid { grid-template-columns: 1fr; }
+
+    /* Aligns the vertical timeline bar to the left on mobile, ONLY in the Experience section */
+    #experience .timeline::before {
+        left: 20px;
+        transform: translateX(0);
+    }
+
+    /* Resets ALL timeline items to be full-width and stack on the left, ONLY in the Experience section */
+    #experience .timeline-item,
+    #experience .timeline-item:nth-child(even) {
+        width: 100%;
+        left: 0;
+        padding-left: 45px; /* Creates space for the line and dot */
+        padding-right: 15px;
+    }
+
+    /* Correctly positions the timeline dot on the vertical bar for all items, ONLY in the Experience section */
+    #experience .timeline-content::before {
+        left: -27px;
+        right: auto;
+    }
+
 }
 
 .scroller {
