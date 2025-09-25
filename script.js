@@ -134,6 +134,30 @@ const projectData = {
         ],
         challenges: 'Managing multiple concurrent timers accurately with JavaScript\'s `setTimeout`. Implementing the dynamic theming based on asynchronous weather API calls without causing layout shifts. Gracefully handling browser popup-blocking behavior.',
         outcome: 'A robust and user-friendly scheduling tool that enhances productivity and entertainment by automating video playback. The project successfully integrates external APIs and demonstrates complex state management in a single-page application.'
+    },
+    project8: {
+        title: '3D Home Design Studio',
+        description: 'A powerful and intuitive web-based 3D home design tool that allows users to create, visualize, and modify home layouts directly in the browser. Built with modern web technologies, it offers a seamless and responsive experience across all devices.',
+        technologies: ['Three.js', 'React', 'JavaScript', 'HTML5', 'Tailwind CSS'],
+        features: ['Real-time 3D rendering', 'Drag-and-drop interface', 'Customizable furniture library', 'Cross-device compatibility', 'Save/Load designs'],
+        challenges: 'Optimizing 3D performance in the browser, implementing intuitive user controls for 3D manipulation, and ensuring data persistence for user designs.',
+        outcome: 'A highly interactive and user-friendly home design application that makes architectural visualization accessible to everyone.'
+    },
+    project9: {
+        title: 'Interview Cracker AI 🚀',
+        description: 'Interview Cracker AI is your personal, AI-powered coach for acing job interviews! This lightweight, single-file web application helps you prepare for every stage of the interview process—from aptitude tests to final HR rounds. Powered by the Gemini API, it provides personalized prep plans, realistic practice sessions, and intelligent feedback to get you job-ready.',
+        technologies: ['Gemini API', 'React', 'JavaScript (ES6+)', 'Tailwind CSS', 'HTML5'],
+        features: ['Personalized interview prep plans', 'AI-driven mock interviews', 'Real-time feedback on answers', 'Covers aptitude, technical, and HR rounds', 'Lightweight and fast single-page app'],
+        challenges: 'Crafting effective prompts for the Gemini API to simulate realistic interview scenarios. Processing and displaying AI feedback in a constructive and easy-to-understand manner. Ensuring a low-latency experience during interactive sessions.',
+        outcome: 'A comprehensive and intelligent interview preparation tool that helps users build confidence and significantly improve their performance in real interviews.'
+    },
+    project10: {
+        title: 'PPT <=> PDF Converter',
+        description: 'A cross-platform desktop application for converting PowerPoint presentations (.ppt, .pptx) to PDF format and vice versa.',
+        technologies: ['Python', 'Tkinter', 'pywin32 (for PPT)', 'PyMuPDF (for PDF)', 'Desktop App'],
+        features: ['Bidirectional conversion (PPT to PDF, PDF to PPT)', 'Batch processing of files', 'Simple and clean user interface', 'Cross-platform support (Windows, macOS, Linux)'],
+        challenges: 'Maintaining original formatting and layout during conversion. Handling large files efficiently without crashing. Packaging the Python application into a standalone executable for different operating systems.',
+        outcome: 'A reliable and easy-to-use desktop utility that simplifies the process of converting between PowerPoint and PDF formats.'
     }
 };
 
