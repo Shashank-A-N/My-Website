@@ -296,8 +296,9 @@ body.light-mode .theme-switcher .moon-icon {
 
 .btn-secondary {
     background: transparent;
-    color: var(--text-color);
+    color: white;
     border: 2px solid var(--primary-color);
+    
 }
 
 .btn-secondary:hover {
@@ -648,6 +649,12 @@ body:not(.light-mode) .social-link img {
     filter: invert(1);
 }
 
+.btn-secondary.light-mode {
+    background: transparent;
+    color: white;
+    border: 2px solid var(--primary-color);
+}
+
 .contact-form {
     display: flex;
     flex-direction: column;
@@ -663,6 +670,17 @@ body:not(.light-mode) .social-link img {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     background: rgba(0,0,0,0.1);
     color: var(--text-color);
+}
+
+body.light-mode {
+    --primary-color: #4f46e5;
+    --secondary-color: #9333ea;
+    --background-color: #f9fafb;
+    --text-color: #486186;
+    --subtle-text-color: #6b7280;
+    --glass-bg: rgba(255, 255, 255, 0.5);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --card-bg: #ffffff;
 }
 
 body.light-mode .contact-form input,
@@ -1310,3 +1328,12 @@ body.light-mode .contact-form textarea {
             font-size: 0.8rem;
             font-weight: 500;
         }
+
+
+.inner-card{
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+}
