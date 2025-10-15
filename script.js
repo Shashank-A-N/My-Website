@@ -158,6 +158,48 @@ const projectData = {
         features: ['Bidirectional conversion (PPT to PDF, PDF to PPT)', 'Batch processing of files', 'Simple and clean user interface', 'Cross-platform support (Windows, macOS, Linux)'],
         challenges: 'Maintaining original formatting and layout during conversion. Handling large files efficiently without crashing. Packaging the Python application into a standalone executable for different operating systems.',
         outcome: 'A reliable and easy-to-use desktop utility that simplifies the process of converting between PowerPoint and PDF formats.'
+    },
+    project11: {
+        title: 'ESG Handler & Timesheet Dashboard',
+        description: 'A comprehensive, single-page web application designed to help businesses and individuals track Environmental, Social, and Governance (ESG) metrics alongside efficient employee time management.',
+        technologies: ['HTML', 'Tailwind CSS', 'JavaScript', 'Chart.js'],
+        features: [
+            'Dashboard for visualizing key ESG metrics.',
+            'Data entry forms for Environmental, Social, and Governance criteria.',
+            'Employee timesheet submission and tracking.',
+            'Interactive charts to monitor progress over time.',
+            'Single-page application design for a seamless user experience.'
+        ],
+        challenges: 'Designing a unified and intuitive interface for two distinct types of data (qualitative ESG metrics and quantitative timesheet data). Creating meaningful and easy-to-understand visualizations for complex ESG information. Ensuring the application is responsive and functional across all devices.',
+        outcome: 'An integrated web tool that empowers organizations to monitor their sustainability initiatives and workforce productivity from a single, cohesive dashboard, promoting data-driven decision-making.'
+    },
+    project12: {
+        title: 'AI Voice Generator & Document Reader',
+        description: 'Users can type text directly or upload documents (PDF, DOCX, PPTX) to extract text automatically and convert it into audio using AI-powered text-to-speech.',
+        technologies: ['HTML', 'Tailwind CSS', 'JavaScript', 'Dockerfile', 'Python'],
+        features: [
+            'AI-powered text-to-speech conversion from direct text input.',
+            'Supports uploading PDF, DOCX, and PPTX files.',
+            'Automatically extracts text content from various document formats.',
+            'Python backend for robust document processing.',
+            'Containerized with Docker for consistent and scalable deployment.'
+        ],
+        challenges: 'Accurately parsing and extracting clean, readable text from complex document layouts (e.g., multi-column PDFs, presentations with speaker notes). Integrating the frontend with a Python backend for file processing. Optimizing the voice generation for clarity and natural intonation.',
+        outcome: 'A powerful and accessible web application that transforms written content from multiple sources into high-quality audio, making information more accessible for users.'
+    },
+    project13: {
+        title: 'Remote Screen Viewer & Controller',
+        description: 'Enables real-time screen sharing and remote control between devices directly in the browser using secure WebRTC P2P connections.',
+        technologies: ['HTML', 'Tailwind CSS', 'JavaScript', 'PeerJS', 'WebRTC'],
+        features: [
+            'Real-time screen sharing from host to controller.',
+            'Remote click interaction from controller to host.',
+            'Easy and secure connection setup via QR codes.',
+            'No installation required; runs entirely in the browser.',
+            'Direct peer-to-peer connection for privacy and low latency.'
+        ],
+        challenges: 'Establishing stable WebRTC connections across various network types (NAT traversal). Minimizing latency for a responsive remote control experience. Gracefully handling connection drops and implementing a reconnection mechanism.',
+        outcome: 'A fully functional, web-based remote support and screen sharing tool that prioritizes ease of use and security by leveraging modern peer-to-peer web technologies.'
     }
 };
 
@@ -237,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// --- JavaScript for the Infinite Scroller ---
+// --- JavaScript for the Infinite Scroller --- 
 const scroller = document.querySelector(".scroller");
 
 // Check if the user prefers reduced motion. If so, we don't add the animation.
