@@ -38,6 +38,7 @@ body {
     background-color: var(--background-color);
     overflow-x: hidden;
     transition: background-color 0.5s ease, color 0.5s ease;
+    padding: 0;
 }
 
 .background-shapes {
@@ -424,7 +425,7 @@ section {
 /* Projects Section */
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
 }
 
@@ -839,7 +840,7 @@ body.light-mode .contact-form textarea {
     .timeline-item { width: 100%; left: 0; padding-left: 3rem; padding-right: 0; }
     .timeline-item:nth-child(even) { padding-left: 3rem; }
     .timeline-content::before { left: -2.5rem !important; }
-    .hero-buttons { flex-direction: column; align-items: center; }
+    .hero-buttons { display: wrap;  align-items: center; }
     .skills-grid, .projects-grid, .education-grid { grid-template-columns: 1fr; }
 
     /* Aligns the vertical timeline bar to the left on mobile, ONLY in the Experience section */
@@ -848,7 +849,7 @@ body.light-mode .contact-form textarea {
         transform: translateX(0);
     }
 
-    /* Resets ALL timeline items to be full-width and stack on the left, ONLY in the Experience section */
+    /* Resets ALL timeline items to be full-width and stack on the left, ONLY in the Experience section hero */
     #experience .timeline-item,
     #experience .timeline-item:nth-child(even) {
         width: 100%;
@@ -992,7 +993,7 @@ body.light-mode .contact-form textarea {
         /* Projects Grid Layout */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
         }
 
@@ -1331,9 +1332,18 @@ body.light-mode .contact-form textarea {
 
 
 .inner-card{
-    padding: 5px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
 }
+/* 
+.projects-grid{
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    flex-grow: 1;
+} */
