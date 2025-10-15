@@ -102,6 +102,7 @@ body.light-mode .background-shapes {
 .navbar {
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
     z-index: 1000;
     padding: 1rem 0;
@@ -791,7 +792,7 @@ body.light-mode .contact-form textarea {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 827px) {
     .nav-menu {
         position: fixed;
         left: -100%;
@@ -844,6 +845,43 @@ body.light-mode .contact-form textarea {
         right: auto;
     }
 
+}
+
+@media (max-width: 827px) {
+    .nav-menu {
+        /* Core Layout & Positioning */
+        position: fixed;
+        top: 70px; /* Adjust based on your header's height */
+        left: 0;
+        width: 100%;
+        z-index: 1000; /* Ensures menu is on top of other content */
+
+        /* Initial Hidden State */
+        transform: translateX(-100%);
+        visibility: hidden; /* Hide from screen readers when not active */
+
+        /* Animation */
+        transition: transform 0.3s ease-in-out, visibility 0.3s;
+
+        /* Styling */
+        display: flex; /* Use flexbox for better item alignment */
+        flex-direction: column;
+        align-items: center; /* Center items horizontally */
+        background: rgba(17, 24, 39, 0.85);
+        
+        /* Frosted Glass Effect with Prefixes */
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.2);
+        padding: 2rem 0;
+    }
+
+    .nav-menu.active {
+        /* Active (Visible) State */
+        transform: translateX(0);
+        visibility: visible;
+    }
 }
 
 .scroller {
