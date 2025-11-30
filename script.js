@@ -300,3 +300,317 @@ function addAnimation() {
         scrollerInner.appendChild(duplicatedItem);
     });
 }
+
+// --- WATER SIMULATION BACKGROUND ---
+(function () {
+    const homeSection = document.getElementById('home');
+    if (!homeSection) return;
+
+    // Configuration
+    const CONFIG = {
+        simRes: 256,
+        meshRes: 256,
+        viscosity: 0.985,
+        waveSpeed: 2.0,
+        mouseSize: 0.05,
+        mouseStrength: 0.2, // Slightly stronger for effect
+        waterColor: new THREE.Color('#006994'),
+        deepColor: new THREE.Color('#001e36'),
+        lightPos: new THREE.Vector3(10, 20, 10)
+    };
+
+    let scene, camera, renderer;
+    let simScene, simCamera, simMesh;
+    let renderTargetA, renderTargetB;
+    let waterMesh, floorMesh;
+    let raycaster = new THREE.Raycaster();
+    let mouse = new THREE.Vector2(9999, 9999);
+    let geometrySize = 1; // Tracks the dynamic scale of the water plane
+
+    // Shader Code
+    const simVertexShader = `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+    `;
+
+    const simFragmentShader = `
+        uniform sampler2D uTexture;
+        uniform vec2 uMouse;
+        uniform float uMouseActive;
+        uniform float uViscosity;
+        uniform float uWaveSpeed;
+        uniform float uMouseSize;
+        uniform float uMouseStrength;
+        uniform vec2 uResolution;
+        varying vec2 vUv;
+        void main() {
+            vec2 cellSize = 1.0 / uResolution;
+            vec4 state = texture2D(uTexture, vUv);
+            float height = state.r;
+            float vel = state.g;
+            float up = texture2D(uTexture, vUv + vec2(0.0, cellSize.y)).r;
+            float down = texture2D(uTexture, vUv + vec2(0.0, -cellSize.y)).r;
+            float left = texture2D(uTexture, vUv + vec2(-cellSize.x, 0.0)).r;
+            float right = texture2D(uTexture, vUv + vec2(cellSize.x, 0.0)).r;
+            float avg = (up + down + left + right) * 0.25;
+            float accel = (avg - height) * uWaveSpeed;
+            vel += accel;
+            vel *= uViscosity;
+            height += vel;
+            float d = distance(vUv, uMouse);
+            if (uMouseActive > 0.5 && d < uMouseSize) {
+                float force = (1.0 - d / uMouseSize);
+                height -= force * uMouseStrength; 
+            }
+            gl_FragColor = vec4(height, vel, 0.0, 1.0);
+        }
+    `;
+
+    const waterVertexShader = `
+        uniform sampler2D uHeightMap;
+        varying vec2 vUv;
+        varying vec3 vViewPosition;
+        varying vec3 vWorldPosition;
+        void main() {
+            vUv = uv;
+            float h = texture2D(uHeightMap, uv).r;
+            vec3 pos = position;
+            pos.z += h * 2.0;
+            vec4 worldPosition = modelMatrix * vec4(pos, 1.0);
+            vWorldPosition = worldPosition.xyz;
+            vec4 mvPosition = viewMatrix * worldPosition;
+            vViewPosition = -mvPosition.xyz;
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `;
+
+    const waterFragmentShader = `
+        uniform sampler2D uHeightMap;
+        uniform vec3 uColor;
+        uniform vec3 uDeepColor;
+        uniform vec3 uLightPos;
+        uniform vec2 uResolution;
+        varying vec2 vUv;
+        varying vec3 vViewPosition;
+        varying vec3 vWorldPosition;
+        vec3 getNormal(vec2 uv) {
+            vec2 texel = 1.0 / uResolution;
+            float h = texture2D(uHeightMap, uv).r;
+            float hRight = texture2D(uHeightMap, uv + vec2(texel.x, 0.0)).r;
+            float hUp = texture2D(uHeightMap, uv + vec2(0.0, texel.y)).r;
+            return normalize(vec3(h - hRight, h - hUp, 0.05));
+        }
+        void main() {
+            vec3 normal = getNormal(vUv);
+            vec3 viewDir = normalize(vViewPosition);
+            vec3 lightDir = normalize(uLightPos - vWorldPosition);
+            vec3 halfVector = normalize(lightDir + viewDir);
+            float fresnel = 0.02 + (1.0 - 0.02) * pow(1.0 - dot(viewDir, normal), 5.0);
+            float NdotH = max(0.0, dot(normal, halfVector));
+            float specular = pow(NdotH, 100.0) * 1.5;
+            float height = texture2D(uHeightMap, vUv).r;
+            vec3 waterBase = mix(uDeepColor, uColor, height * 5.0 + 0.5);
+            vec3 finalColor = waterBase + vec3(specular) + (fresnel * vec3(0.8, 0.9, 1.0));
+            gl_FragColor = vec4(finalColor, 0.9);
+        }
+    `;
+
+    const floorVertexShader = `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+    `;
+
+    const floorFragmentShader = `
+        uniform sampler2D uWaterHeight;
+        varying vec2 vUv;
+        void main() {
+            float h = texture2D(uWaterHeight, vUv).r;
+            float hRight = texture2D(uWaterHeight, vUv + vec2(0.01, 0.0)).r;
+            float hUp = texture2D(uWaterHeight, vUv + vec2(0.0, 0.01)).r;
+            vec3 normal = normalize(vec3(h - hRight, h - hUp, 0.1));
+            vec2 refractedUv = vUv + normal.xy * 0.05;
+            vec2 grid = fract(refractedUv * 10.0);
+            float lineThickness = 0.05;
+            float lines = step(lineThickness, grid.x) * step(lineThickness, grid.y);
+            vec3 tileColor = mix(vec3(0.8, 0.9, 1.0), vec3(0.9, 0.95, 1.0), lines);
+            float lightFocus = pow(max(0.0, 1.0 - length(normal.xy * 5.0)), 4.0);
+            vec3 finalColor = tileColor * (0.8 + lightFocus * 0.5);
+            gl_FragColor = vec4(finalColor * vec3(0.5, 0.7, 0.9), 1.0);
+        }
+    `;
+
+    function init() {
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(homeSection.clientWidth, homeSection.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Position Canvas
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = '0';
+        renderer.domElement.style.left = '0';
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
+        renderer.domElement.style.zIndex = '-1'; // Behind content
+
+        homeSection.appendChild(renderer.domElement);
+        // Ensure home section has relative positioning for the absolute canvas to work
+        homeSection.style.position = 'relative';
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+
+        // Front View Camera
+        camera = new THREE.PerspectiveCamera(45, homeSection.clientWidth / homeSection.clientHeight, 0.1, 100);
+        camera.position.set(0, 0, 3.5);
+        camera.lookAt(0, 0, 0);
+
+        setupSimulation();
+        setupWater();
+        setupFloor();
+
+        // Initial sizing
+        onWindowResize();
+
+        window.addEventListener('resize', onWindowResize, false);
+        homeSection.addEventListener('mousemove', onMouseMove, false);
+        homeSection.addEventListener('touchmove', onTouchMove, false);
+
+        animate();
+    }
+
+    function setupSimulation() {
+        simScene = new THREE.Scene();
+        simCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const simGeometry = new THREE.PlaneGeometry(2, 2);
+        const simMaterial = new THREE.ShaderMaterial({
+            vertexShader: simVertexShader,
+            fragmentShader: simFragmentShader,
+            uniforms: {
+                uTexture: { value: null },
+                uMouse: { value: new THREE.Vector2(0, 0) },
+                uMouseActive: { value: 0.0 },
+                uMouseSize: { value: CONFIG.mouseSize },
+                uMouseStrength: { value: CONFIG.mouseStrength },
+                uViscosity: { value: CONFIG.viscosity },
+                uWaveSpeed: { value: CONFIG.waveSpeed },
+                uResolution: { value: new THREE.Vector2(CONFIG.simRes, CONFIG.simRes) }
+            }
+        });
+        simMesh = new THREE.Mesh(simGeometry, simMaterial);
+        simScene.add(simMesh);
+
+        renderTargetA = new THREE.WebGLRenderTarget(CONFIG.simRes, CONFIG.simRes, { type: THREE.FloatType });
+        renderTargetB = new THREE.WebGLRenderTarget(CONFIG.simRes, CONFIG.simRes, { type: THREE.FloatType });
+    }
+
+    function setupWater() {
+        // Create a 1x1 geometry that we can scale dynamically
+        const geometry = new THREE.PlaneGeometry(1, 1, CONFIG.meshRes, CONFIG.meshRes);
+        const material = new THREE.ShaderMaterial({
+            vertexShader: waterVertexShader,
+            fragmentShader: waterFragmentShader,
+            uniforms: {
+                uHeightMap: { value: null },
+                uColor: { value: CONFIG.waterColor },
+                uDeepColor: { value: CONFIG.deepColor },
+                uLightPos: { value: CONFIG.lightPos },
+                uResolution: { value: new THREE.Vector2(CONFIG.simRes, CONFIG.simRes) }
+            },
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        waterMesh = new THREE.Mesh(geometry, material);
+        scene.add(waterMesh);
+    }
+
+    function setupFloor() {
+        // Create a 1x1 geometry that we can scale dynamically
+        const geometry = new THREE.PlaneGeometry(1, 1);
+        const material = new THREE.ShaderMaterial({
+            vertexShader: floorVertexShader,
+            fragmentShader: floorFragmentShader,
+            uniforms: { uWaterHeight: { value: null } }
+        });
+        floorMesh = new THREE.Mesh(geometry, material);
+        floorMesh.position.z = -0.5;
+        scene.add(floorMesh);
+    }
+
+    function updateMouse(x, y) {
+        const rect = homeSection.getBoundingClientRect();
+        // Calculate mouse relative to the home section, not the window
+        const relX = x - rect.left;
+        const relY = y - rect.top;
+
+        const ndc = new THREE.Vector2(
+            (relX / rect.width) * 2 - 1,
+            -(relY / rect.height) * 2 + 1
+        );
+
+        raycaster.setFromCamera(ndc, camera);
+        const target = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+        const intersectPoint = new THREE.Vector3();
+        raycaster.ray.intersectPlane(target, intersectPoint);
+
+        if (intersectPoint) {
+            // Map world space to UV space (0 to 1) based on current geometry size
+            // The mesh is centered at 0,0 and has size 'geometrySize'
+            const uvX = (intersectPoint.x + geometrySize / 2) / geometrySize;
+            const uvY = (intersectPoint.y + geometrySize / 2) / geometrySize;
+
+            simMesh.material.uniforms.uMouse.value.set(uvX, uvY);
+            simMesh.material.uniforms.uMouseActive.value = 1.0;
+        } else {
+            simMesh.material.uniforms.uMouseActive.value = 0.0;
+        }
+    }
+
+    function onMouseMove(e) { updateMouse(e.clientX, e.clientY); }
+    function onTouchMove(e) {
+        if (e.touches.length > 0) updateMouse(e.touches[0].clientX, e.touches[0].clientY);
+    }
+
+    function onWindowResize() {
+        if (!homeSection) return;
+        const width = homeSection.clientWidth;
+        const height = homeSection.clientHeight;
+
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+
+        // Dynamically scale the planes to cover the viewport at the camera's Z distance
+        const dist = camera.position.z;
+        const vFOV = THREE.Math.degToRad(camera.fov); // Vertical FOV in radians
+
+        // Visible height at Z=0 (approximate water level)
+        const visibleHeight = 2 * Math.tan(vFOV / 2) * dist;
+        // Visible width
+        const visibleWidth = visibleHeight * camera.aspect;
+
+        // Set geometry size to cover the largest dimension (Square simulation space)
+        // Add a small buffer (1.1) to avoid edge artifacts
+        geometrySize = Math.max(visibleWidth, visibleHeight) * 1.1;
+
+        if (waterMesh) waterMesh.scale.set(geometrySize, geometrySize, 1);
+        if (floorMesh) floorMesh.scale.set(geometrySize, geometrySize, 1);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        simMesh.material.uniforms.uTexture.value = renderTargetB.texture;
+        renderer.setRenderTarget(renderTargetA);
+        renderer.render(simScene, simCamera);
+
+        const temp = renderTargetA;
+        renderTargetA = renderTargetB;
+        renderTargetB = temp;
+
+        renderer.setRenderTarget(null);
+        waterMesh.material.uniforms.uHeightMap.value = renderTargetB.texture;
+        floorMesh.material.uniforms.uWaterHeight.value = renderTargetB.texture;
+        renderer.render(scene, camera);
+    }
+
+    init();
+})();
