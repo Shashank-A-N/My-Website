@@ -43,6 +43,7 @@ body {
 
 /* --- INTEGRATED NEUMORPHIC THEME FOR ABOUT SECTION --- */
 :root {
+    /* Default (Dark/Onyx) variables for the About Section */
     --neu-bg: #1A1B1E;
     --neu-text-main: #E1E1E6;
     --neu-text-sub: #A1A1AA;
@@ -2380,10 +2381,6 @@ body {
         opacity: 0.6;
         filter: grayscale(80%);
         transform: scale(0.98);
-    }
-
-    .container {
-        max-width: 100%;
     }
 
     .bento-grid .bento-card:hover {
