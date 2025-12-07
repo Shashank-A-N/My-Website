@@ -1,4 +1,10 @@
 /* General Styling and Liquid Glass Theme */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
 :root {
     --primary-color: #818cf8;
     --secondary-color: #c084fc;
@@ -2876,7 +2882,8 @@ body {
 /* Base overrides to ensure grid behaves correctly */
 #education .bento-grid {
     display: grid;
-    height: auto !important; /* Remove fixed height constraint */
+    height: auto !important;
+    /* Remove fixed height constraint */
     width: 100%;
     gap: 1.5rem;
 }
@@ -2920,7 +2927,7 @@ body {
         grid-auto-rows: minmax(250px, auto);
     }
 
-    #education .bento-large, 
+    #education .bento-large,
     #education .bento-wide {
         grid-column: span 2 !important;
     }
@@ -2955,14 +2962,14 @@ body {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         /* Force visibility overrides */
         position: relative !important;
-        transform: none !important; 
+        transform: none !important;
     }
 
-    #sidebar {
+    /* #sidebar {
         width: 100% !important;
         transform: none !important;
         position: relative !important;
-    }
+    } */
 
     #category-nav {
         display: flex;
@@ -2975,18 +2982,18 @@ body {
         height: auto;
         min-height: 400px;
     }
-    
+
     /* Hide right sidebar details on mobile to save space */
     .right-sidebar {
         display: none;
     }
-    
+
     /* Adjust specific chart container heights */
     #skills .relative.w-full {
         height: auto !important;
         min-height: 600px;
     }
-    
+
     #skills .chart-container {
         height: 250px !important;
     }
@@ -2997,16 +3004,19 @@ body {
 @media (max-width: 768px) {
     .arc-wrapper {
         height: 600px;
-        perspective: none; /* Flatten 3D on mobile for better performance */
+        perspective: none;
+        /* Flatten 3D on mobile for better performance */
     }
 
     .arc-card {
-        width: 85vw; /* Use viewport width instead of fixed pixel */
+        width: 85vw;
+        /* Use viewport width instead of fixed pixel */
         max-width: 320px;
-        margin-left: -42.5vw; /* Center based on vw */
+        margin-left: -42.5vw;
+        /* Center based on vw */
         top: 45%;
         /* Reset 3D transforms slightly for readability */
-        transform: translate(-50%, -50%) !important; 
+        transform: translate(-50%, -50%) !important;
         left: 50% !important;
         margin-left: 0 !important;
         margin-top: 0 !important;
@@ -3015,13 +3025,13 @@ body {
     .project-image-container {
         height: 180px;
     }
-    
+
     /* Ensure only the active card is fully visible/interactable */
     .arc-card:not(.focused) {
         opacity: 0.3 !important;
         pointer-events: none;
     }
-    
+
     .arc-card.focused {
         opacity: 1 !important;
         z-index: 100;
@@ -3035,22 +3045,23 @@ body {
     #experience .container {
         padding: 0 16px;
     }
-    
+
     /* Reset sticky positioning constraints */
     #experience {
         overflow: visible !important;
     }
-    
+
     .experience-card-wrapper {
-        top: 80px; /* Adjust sticky offset for mobile header */
+        top: 80px;
+        /* Adjust sticky offset for mobile header */
         margin-bottom: 1rem;
         padding-bottom: 3rem;
     }
-    
+
     .experience-glass {
         padding: 1.5rem !important;
     }
-    
+
     /* Adjust the large number background */
     .experience-glass .text-7xl {
         display: none;
@@ -3065,22 +3076,22 @@ body {
         flex-direction: column;
         gap: 1.5rem;
     }
-    
+
     .spotlight-card {
         min-height: auto;
         height: auto !important;
     }
-    
+
     /* Fix map container height */
     #contact-grid-container .min-h-\[180px\] {
         min-height: 250px;
     }
-    
+
     /* Text sizing adjustments */
     .hero-title {
         font-size: 2.5rem;
     }
-    
+
     #contact h2 {
         font-size: 2.5rem;
     }
