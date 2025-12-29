@@ -7,6 +7,7 @@ const navLinks = document.querySelectorAll('.nav-link');
 if (mobileMenu) {
     mobileMenu.addEventListener('click', () => navMenu.classList.toggle('active'));
 }
+
 navLinks.forEach(link => link.addEventListener('click', () => {
     if (navMenu) navMenu.classList.remove('active');
 }));
@@ -2748,4 +2749,3 @@ function resetEmailForm() {
         successOverlay.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
     }
 }
-
