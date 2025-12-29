@@ -1,5 +1,6 @@
 /* General Styling and Liquid Glass Theme */
-html, body {
+html,
+body {
     overflow-x: hidden;
     width: 100%;
     position: relative;
@@ -467,7 +468,7 @@ body.light-mode .theme-switcher .moon-icon {
 
 .hero-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 5px;
     justify-content: center;
     flex-wrap: wrap;
 }
@@ -475,12 +476,32 @@ body.light-mode .theme-switcher .moon-icon {
 /* Glass Card Base Style */
 .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: 20px;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+}
+
+.glass-card,
+.experience-glass,
+.nav-menu {
+    /* Keep your existing styles */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* Optimization for mobile/low-end */
+@media (max-width: 768px) {
+
+    .glass-card,
+    .experience-glass,
+    .nav-menu {
+        /* Remove blur, increase opacity for readability */
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(17, 24, 39, 0.95) !important;
+        /* Make it solid dark */
+    }
 }
 
 .glass-card:hover {
@@ -561,6 +582,27 @@ section {
 
 .experience {
     padding: 0;
+}
+
+@media (min-width: 1024px) {
+
+    /* Target the grid column wrapper to ensure it spans the full height of the section */
+    #experience .grid>div:first-child {
+        height: auto;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Target the inner content div that should stick */
+    #experience .grid>div:first-child>div.sticky {
+        position: -webkit-sticky !important;
+        position: sticky !important;
+        /* Adjust 120px to sit nicely below your navbar */
+        top: 120px !important;
+        align-self: flex-start;
+        height: fit-content;
+    }
 }
 
 /* About Section */
@@ -1723,12 +1765,6 @@ body {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 }
 
-/* Glassmorphism Effect */
-.glass-card {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-}
-
 .project-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.2);
@@ -1930,7 +1966,7 @@ body {
 
 .hero-buttons {
     display: flex;
-    gap: 0.75rem;
+    gap: 5px;
     margin-top: auto;
 }
 
@@ -2112,16 +2148,17 @@ body {
 .arc-wrapper {
     position: relative;
     width: 100%;
-    height: 700px;
-    /* Height of the scroll area */
-    overflow: hidden;
+    height: 600px;
+    /* Fixed height for the carousel area */
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
     perspective: 1000px;
-    /* Essential for 3D depth */
-    margin-bottom: 2rem;
-    cursor: grab;
+    /* Keeps 3D tilt effect */
+    z-index: 10;
+    touch-action: pan-y;
+    /* Allow vertical scroll on mobile if not dragging */
 }
 
 .arc-wrapper:active {
@@ -2142,32 +2179,36 @@ body {
 /* Base style for cards in the arc */
 .arc-card {
     position: absolute;
-    width: 450px;
-    /* Fixed width is best for math */
-    height: auto;
+    top: 50%;
     left: 50%;
-    top: 40%;
-    /* Pivot point vertical position */
-    margin-left: -160px;
-    /* Half of width to center */
-    margin-top: -150px;
-    /* Approximate half height offset */
-    transform-origin: center center;
-    /* Rotate around its own center */
-    transition: box-shadow 0.3s ease;
-    /* Only animate shadow by CSS, transform is JS */
-    will-change: transform, opacity, filter;
-    /* Ensure glass effect persists */
+    /* Centering Hack */
+    transform: translate(-50%, -50%);
+
+    width: 400px;
+    /* Fixed width */
+    height: auto;
+
     background: var(--card-bg-color);
     border: 1px solid var(--border-color);
     border-radius: 16px;
+
+    /* Critical for stacking */
+    transform-style: preserve-3d;
+    will-change: transform, opacity, filter;
+
+    /* Smooth movement */
+    transition: box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
 }
 
 .arc-card .inner-card {
-    /* Prevent default padding issues in absolute mode */
     width: 100%;
+    background: rgba(30, 41, 59, 0.6);
+    /* Glass background */
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    overflow: hidden;
 }
 
 /* Ensure images/videos fit the new fixed width */
@@ -2193,9 +2234,16 @@ body {
     }
 
     .arc-card {
-        width: 320px;
+        width: 65vw;
+        /* Responsive width */
+        max-width: 320px;
+        height: auto;
         margin-left: -160px;
         top: 45%;
+    }
+
+    .project-image-container {
+        height: 180px;
     }
 }
 
@@ -2310,6 +2358,7 @@ body {
     position: relative;
     /* Ensure background blends with your theme */
     background: transparent;
+    overflow: visible !important;
 }
 
 .card-stack-item {
@@ -2350,7 +2399,7 @@ body {
     top: 90px;
 
     /* Adds spacing so they don't look completely flat when stacked */
-    padding-bottom: 4rem;
+    padding-bottom: 23px;
 
     /* Ensure cards stack on top of each other */
     transform-origin: center top;
@@ -2999,43 +3048,113 @@ body {
     }
 }
 
+/* Active State (Center Card) */
+.arc-card.focused {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-color: var(--accent-color);
+    z-index: 1000 !important;
+    /* Forces it to top */
+}
+
 /* --- 3. PROJECTS ARC FIXES --- */
 
+/* --- FIXED MOBILE STYLES --- */
+/* --- FIXED MOBILE STYLES --- */
 @media (max-width: 768px) {
     .arc-wrapper {
-        height: 600px;
-        perspective: none;
-        /* Flatten 3D on mobile for better performance */
+        height: 500px;
+        perspective: 1000px;
+        overflow: hidden;
     }
 
     .arc-card {
-        width: 85vw;
-        /* Use viewport width instead of fixed pixel */
-        max-width: 320px;
-        margin-left: -42.5vw;
-        /* Center based on vw */
-        top: 45%;
-        /* Reset 3D transforms slightly for readability */
-        transform: translate(-50%, -50%) !important;
-        left: 50% !important;
-        margin-left: 0 !important;
-        margin-top: 0 !important;
+        width: 65vw;
+        max-width: 300px;
+        height: auto;
+        top: 50%;
+        left: 50%;
+        margin: 0 !important;
+        transform-origin: center center;
     }
 
     .project-image-container {
-        height: 180px;
+        height: 160px;
     }
 
-    /* Ensure only the active card is fully visible/interactable */
+    .project-content {
+        padding: 1rem;
+    }
+
+    .project-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .project-content p {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
+        -webkit-line-clamp: 2;
+    }
+
+    /* --- UPDATED: ICON-ONLY BUTTONS --- */
+    .arc-card {
+        gap: 8px;
+        /* Space between icons */
+        margin-top: 0.5rem;
+        justify-content: flex-start;
+        /* Align left */
+    }
+
+    .hero-buttons {
+        display: wrap;
+        gap: 5px;
+    }
+
+    .arc-card .hero-buttons .btn {
+        width: 32px;
+        /* Fixed small width */
+        height: 32px;
+        /* Fixed small height */
+        padding: 0 !important;
+        /* Remove padding to force square/circle */
+        border-radius: 50%;
+        /* Make them circular (or use 8px for rounded square) */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+    }
+
+    /* Hide the text label on mobile */
+    .arc-card .hero-buttons .btn span {
+        display: none;
+    }
+
+    /* Adjust Icon Size */
+    .arc-card .hero-buttons .btn i {
+        font-size: 0.9rem !important;
+        margin: 0 !important;
+        /* Remove any side margins */
+    }
+
+    /* Visibility Logic */
     .arc-card:not(.focused) {
-        opacity: 0.3 !important;
+        opacity: 0.5;
         pointer-events: none;
+        filter: blur(2px) grayscale(100%);
     }
 
     .arc-card.focused {
-        opacity: 1 !important;
+        opacity: 1;
         z-index: 100;
-        transform: translate(-50%, -50%) scale(1) !important;
+        filter: none;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .arc-inner {
+        width: 100%;
+        height: 100%;
     }
 }
 
@@ -3095,4 +3214,560 @@ body {
     #contact h2 {
         font-size: 2.5rem;
     }
+}
+
+/* --- Mobile Drag Hint Styling --- */
+.mobile-drag-hint {
+    display: none;
+    /* Hidden by default on desktop */
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid var(--border-color);
+}
+
+.mobile-drag-hint span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-drag-hint i {
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+/* Animation for the hand icon */
+.drag-anim {
+    animation: swipe-hint 1.5s ease-in-out infinite;
+}
+
+@keyframes swipe-hint {
+
+    0%,
+    100% {
+        transform: translateX(-3px);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translateX(3px);
+        opacity: 1;
+    }
+}
+
+/* Show only on mobile screens */
+@media (max-width: 768px) {
+    .mobile-drag-hint {
+        display: flex;
+    }
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: block;
+}
+
+.hero-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    pointer-events: none;
+    /* Let clicks pass through to canvas where possible */
+}
+
+.hero-content {
+    text-align: center;
+    color: white;
+    /* This creates the inverted color effect against the fluid */
+    mix-blend-mode: difference;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    margin: 0 0 10px 0;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-weight: 500;
+    margin: 0 0 30px 0;
+    opacity: 0.9;
+}
+
+.role-wrapper {
+    font-weight: 700;
+    color: #d4d4d4;
+    display: inline-block;
+}
+
+/* --- Buttons --- */
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    pointer-events: auto;
+    /* Re-enable clicks for buttons */
+}
+
+.btn {
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    border: 2px solid #fff;
+}
+
+.btn-primary:hover {
+    background: transparent;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.btn-secondary:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Animations --- */
+.fade-in {
+    animation: fadeIn 1.2s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.hero-title.fade-in {
+    animation-delay: 0.2s;
+}
+
+.hero-subtitle.fade-in {
+    animation-delay: 0.4s;
+}
+
+.hero-buttons.fade-in {
+    animation-delay: 0.6s;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Full Control Panel Styles --- */
+.controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: min(300px, 88vw);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    background: rgba(16, 16, 16, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    color: #f0f0f0;
+    z-index: 20;
+    transform: translateX(0);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    opacity: 1;
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .controls {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 100%;
+        border-radius: 20px 0 0 20px;
+        border-top: none;
+        border-right: none;
+        border-bottom: none;
+        padding-top: 80px;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .hero-buttons {
+        display: wrap;
+        gap: 10px;
+        width: 100%;
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+.hero-buttons .btn i {
+    margin-right: 6px;
+}
+
+.controls::-webkit-scrollbar {
+    width: 6px;
+}
+
+.controls::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.controls::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.controls.minimized {
+    transform: translateX(120%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.toggle-btn {
+    position: absolute;
+    top: 86px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 21;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    font-size: 1.2rem;
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1) rotate(90deg);
+}
+
+.section-title-ctrl {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #6d6d6d;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+}
+
+.section-title-ctrl:first-child {
+    margin-top: 0;
+}
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+.control-group label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-weight: 500;
+}
+
+.control-group label span {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    margin-top: -5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.checkbox-row label {
+    font-size: 0.9rem;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #7000ff;
+}
+
+input:checked+.slider:before {
+    transform: translateX(18px);
+}
+
+select {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: border 0.2s;
+    font-size: 0.9rem;
+}
+
+select:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #aaa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- NEW: Filter Bar Styles --- */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    z-index: 20;
+    position: relative;
+}
+
+.filter-btn {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(4px);
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    border-color: transparent;
+}
+
+/* --- UPGRADE: Advanced 3D Card Effects --- */
+.arc-card {
+    /* Preserve existing layout styles... */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    /* Add smooth transition for the filter animation */
+    transition: opacity 0.4s ease, transform 0.1s linear, filter 0.3s ease;
+}
+
+.arc-card {
+    /* Ensure transitions are smooth but snappy */
+    transition: transform 0.1s linear, opacity 0.3s ease, filter 0.3s ease;
+    will-change: transform, opacity, z-index;
+}
+
+/* The Holographic Shine Layer */
+.glass-shine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.1) 40%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0.1) 60%,
+            rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    z-index: 10;
+    pointer-events: none;
+    transform: translateX(-100%);
+    transition: opacity 0.3s;
+    mix-blend-mode: overlay;
+}
+
+.arc-card.focused .glass-shine {
+    opacity: 1;
+}
+
+.hide-scroll-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scroll-bar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Renamed Card Class */
+.journey-card-node {
+    position: sticky;
+    top: 0;
+    transform-origin: center top;
+    transition: transform 0.1s linear, filter 0.1s linear;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+/* Renamed Glow Class */
+.glow-decoration {
+    position: absolute;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.4;
 }
