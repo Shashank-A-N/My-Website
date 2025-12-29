@@ -3771,3 +3771,26 @@ select:hover {
     z-index: -1;
     opacity: 0.4;
 }
+
+/* Ensure the fluid canvas stays behind text and buttons */
+canvas#fluid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Low Z-Index */
+    pointer-events: none; /* Allows clicks to pass through to buttons if needed */
+}
+
+/* Ensure buttons are clickable */
+.hero-container {
+    z-index: 10; /* Higher Z-Index */
+    pointer-events: none; /* Let clicks pass through the container div */
+}
+
+.hero-content, 
+.hero-buttons, 
+.btn {
+    pointer-events: auto; /* Re-enable clicks for actual content */
+}
