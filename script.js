@@ -2516,8 +2516,9 @@ function stopConfetti() { isConfettiActive = false; if (confettiLoop) { cancelAn
             updatePointerMoveData(pointer, posX, posY, pointer.color);
         });
 
+        // Corrected code for script.js
         window.addEventListener('touchstart', e => {
-            e.preventDefault();
+            // e.preventDefault();  <-- REMOVED
             const touches = e.targetTouches;
             for (let i = 0; i < touches.length; i++) {
                 if (i >= activePointers.length) break;
@@ -2526,10 +2527,10 @@ function stopConfetti() { isConfettiActive = false; if (confettiLoop) { cancelAn
                 let posY = scaleByPixelRatio(touches[i].clientY);
                 updatePointerDownData(pointer, touches[i].identifier, posX, posY);
             }
-        }, { passive: false });
+        }, { passive: true }); // <-- CHANGED TO TRUE
 
         window.addEventListener('touchmove', e => {
-            e.preventDefault();
+            // e.preventDefault(); <-- REMOVED
             const touches = e.targetTouches;
             for (let i = 0; i < touches.length; i++) {
                 if (i >= activePointers.length) break;
@@ -2538,7 +2539,7 @@ function stopConfetti() { isConfettiActive = false; if (confettiLoop) { cancelAn
                 let posY = scaleByPixelRatio(touches[i].clientY);
                 updatePointerMoveData(pointer, posX, posY, pointer.color);
             }
-        }, { passive: false });
+        }, { passive: true }); // <-- CHANGED TO TRUE
 
         window.addEventListener('touchend', e => {
             const touches = e.changedTouches;
@@ -2685,12 +2686,12 @@ const successOverlay = document.getElementById('email-success-overlay');
 const submitBtn = document.getElementById('btn-submit-email');
 
 // Configuration
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/shashankan077@gmail.com"; 
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/shashankan077@gmail.com";
 
 if (emailForm) {
-    emailForm.addEventListener('submit', function(e) {
+    emailForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        
+
         // 1. Get Values
         const from = document.getElementById('email-from').value;
         const subject = document.getElementById('email-subject').value;
@@ -2700,11 +2701,11 @@ if (emailForm) {
         // 2. Set Loading State
         submitBtn.disabled = true;
         submitBtn.innerHTML = `<span>Sending...</span> <i class="fas fa-spinner fa-spin"></i>`;
-        
+
         // 3. Send Data via Fetch
         fetch(FORM_ENDPOINT, {
             method: "POST",
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
@@ -2715,29 +2716,29 @@ if (emailForm) {
                 _captcha: "false" // Disable captcha for smoother experience
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            // 4. Show Success
-            successOverlay.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
-            successOverlay.classList.add('opacity-100', 'scale-100');
-            
-            // 5. Trigger Confetti (reuse existing function)
-            if (typeof triggerConfetti === 'function') {
-                const rect = emailForm.getBoundingClientRect();
-                const x = (rect.left + rect.width / 2) / window.innerWidth;
-                const y = (rect.top + rect.height / 2) / window.innerHeight;
-                triggerConfetti(x, y);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("Oops! Something went wrong. Please check your connection.");
-        })
-        .finally(() => {
-            // Reset Button
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
-        });
+            .then(response => response.json())
+            .then(data => {
+                // 4. Show Success
+                successOverlay.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+                successOverlay.classList.add('opacity-100', 'scale-100');
+
+                // 5. Trigger Confetti (reuse existing function)
+                if (typeof triggerConfetti === 'function') {
+                    const rect = emailForm.getBoundingClientRect();
+                    const x = (rect.left + rect.width / 2) / window.innerWidth;
+                    const y = (rect.top + rect.height / 2) / window.innerHeight;
+                    triggerConfetti(x, y);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Oops! Something went wrong. Please check your connection.");
+            })
+            .finally(() => {
+                // Reset Button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            });
     });
 }
 
