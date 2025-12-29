@@ -2749,3 +2749,4 @@ function resetEmailForm() {
         successOverlay.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
     }
 }
+
